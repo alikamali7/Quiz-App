@@ -5,6 +5,9 @@ const container = document.getElementById("container");
 const questionText = document.getElementById("question-text");
 const answerList = document.querySelectorAll(".answer-text");
 const scoreText = document.getElementById("score");
+const nextButton = document.getElementById("next-button");
+const finishButton = document.getElementById("finish-button");
+const questionNumber = document.getElementById("question-number");
 
 const CORRECT_BONUS = 10;
 const URL =
@@ -29,6 +32,7 @@ const start = () => {
 };
 
 const showQuestion = () => {
+  questionNumber.innerText = questionIndex + 1;
   const { question, answers, correctAnswerIndex } =
     formattedData[questionIndex];
   correctAnswer = correctAnswerIndex;
@@ -44,17 +48,39 @@ const checkAnswer = (event, index) => {
   isAccepted = false;
 
   const isCorrect = index === correctAnswer ? true : false;
-  if(isCorrect) {
-    event.target.classList.add("correct")
+  if (isCorrect) {
+    event.target.classList.add("correct");
     score += CORRECT_BONUS;
     scoreText.innerText = score;
   } else {
-    event.target.classList.add("incorrect")
-    answerList[correctAnswer].classList.add("correct")
+    event.target.classList.add("incorrect");
+    answerList[correctAnswer].classList.add("correct");
   }
 };
 
+const nextHandler = () => {
+  questionIndex++;
+  if (questionIndex < formattedData.length) {
+    isAccepted = true;
+    removeClasses();
+    showQuestion();
+  } else {
+    finishHandler()
+  }
+};
+
+const removeClasses = () => {
+  answerList.forEach((button) => (button.className = "answer-text"));
+};
+
+const finishHandler = () => {
+  localStorage.setItem("score", JSON.stringify(score));
+    window.location.assign("/end.html");
+}
+
 window.addEventListener("load", fetchData);
+nextButton.addEventListener("click", nextHandler);
+finishButton.addEventListener("click", finishHandler);
 answerList.forEach((button, index) => {
   // const handler = (event) => checkAnswer(event, index);
   // button.addEventListener("click", handler);
