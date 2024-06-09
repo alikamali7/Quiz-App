@@ -1,5 +1,4 @@
 const formatData = (questionData) => {
-  console.log(questionData);
   const result = questionData.map((item) => {
     const questionObject = { question: item.question };
     const answers = [...item.incorrect_answers];
